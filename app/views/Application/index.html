@@ -1,0 +1,17 @@
+
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+Hello World, it is now: <span id="date">DEFAULT</span><br />
+<br />
+<a href="@@{JMXBrowser.index()}">JMXBrowser</a>
+
+<script type="text/javascript">
+		var socket = new WebSocket('@@{DateWebSocket.stream()}');
+	
+	    socket.onmessage = function(event) {
+	        $('#date').contents().replaceWith(event.data);
+	        socket.close();
+	    }
+	    
+</script>

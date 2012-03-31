@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>jwc.widgets.jmx.JMXTreeView</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+	</head>
+	<body>
+	    <h1>jwc.widgets.jmx.JMXTreeView Demo</h1>
+		<div class="container">
+			<div class="row">
+				<div id='jmx_tree_view' class="sixcol">
+				</div>
+				<div class="sixcol last">
+					<div style='width:100%; height: 200px;'>
+						<span>Topic events</span>
+						<div id='topic_info' style='overflow: auto;'></div>
+					</div>
+					<div class='jmxModelDropTarget' style='width:100%; height: 50px; background-color: #DEF;'>
+						<span>Drop nodes on me.</span>
+					</div>
+				</div>
+			<div/>
+		</div>
+		<script type='text/javascript' 
+                src='../../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(
+					'/public/stylesheets/base.css',
+					'jquery')
+				.then(
+					'jquery.json/jquery.json-2.3.min.js',
+					'jwc/models/api/v1/models/jmx_connection_model.js',
+					'jwc/models/api/v1/models/mbean_attribute_list_model.js',
+					'jwc/models/api/v1/models/mbean_attribute_model.js',
+					'jwc/topic',
+					'jwc/widgets/jmx/jmx_tree_view',function(){
+				
+				function displayTopicEvent(e, msg){
+					$("#topic_info").empty();
+					$("#topic_info").append(e+'<br/>'+$.toJSON(msg));
+				}
+				
+				Topic.subscribe('jmxConnection.selected.jmxTree', function(msg){displayTopicEvent('jmxConnection.selected.jmxTree',msg);});
+				Topic.subscribe('domain.selected.jmxTree', function(msg){displayTopicEvent('domain.selected.jmxTree',msg);});
+				Topic.subscribe('folder.selected.jmxTree', function(msg){displayTopicEvent('folder.selected.jmxTree',msg);});
+				Topic.subscribe('mBean.selected.jmxTree', function(msg){displayTopicEvent('mBean.selected.jmxTree',msg);});
+				Topic.subscribe('mBeanAttributeModel.selected.jmxTree', function(msg){displayTopicEvent('mBeanAttributeModel.selected.jmxTree',msg);});
+				Topic.subscribe('mBeanAttributeListModel.selected.jmxTree', function(msg){displayTopicEvent('mBeanAttributeListModel.selected.jmxTree',msg);});
+
+				$('.jmxModelDropTarget')[0].drop_check = function(model){
+					return true;
+				};
+
+				$('.jmxModelDropTarget')[0].drop_finish = function(model){
+					$('.jmxModelDropTarget').empty();
+					$('.jmxModelDropTarget').append($.toJSON(model));
+				};
+				
+				const jmxConnection = new jwc.models.api.v1.JMXConnectionModel({
+					id : 'jmxConnectionId',
+					host : 'nohost',
+					port : 'noport'
+				});
+				
+				const mBeanAttributeModel = new jwc.models.api.v1.MBeanAttributeModel({
+					id : 'jmxconnection/jmxConnectionId/mbean/mBeanId/attributes/attributeName',
+					connId : 'jmxConnectionId',
+					mBeanId : 'mBeanId',
+					name : 'attributeName',
+					value : 'attributeValue',
+				});
+				
+				const mBeanAttributeListModel = new jwc.models.api.v1.MBeanAttributeListModel({
+					id : 'jmxconnection/jmxConnectionId/mbean/mBeanId/attributes', 
+					attributes : [mBeanAttributeModel]
+				});
+				
+				// NOTE: Normally one should add jmxConnections to the tree, here we use a hack to provide
+				// neccessary data to demo the tree.
+				$('#jmx_tree_view').jwc_widgets_jmx_jmx_tree_view({
+					json_data : {
+						data : [{
+							data : {
+								attr : { id : jmxConnection.id},
+								title : jmxConnection.host+ ':' + jmxConnection.port
+							},
+							metadata : {
+								type : 'jmxConnection',
+								model : jmxConnection,
+								url : '/api/v1/jmxconnection/jmxConnectionId/domain'
+							},
+							state : 'closed',
+							children : [{
+								data : {
+									attr : { id : jmxConnection.id + '/domain/' + 'domainName'},
+									title : 'domainName'
+								},
+								metadata : {
+									type : 'domain',
+									model : { id : jmxConnection.id + '/domain/' + 'domainName'},
+									url : '/api/v1/jmxconnection/'+jmxConnection.id + '/domain/' + 'domainName'
+								},
+								state : 'closed',
+								children : [{
+									data : {
+										attr : { id : 'folderId'},
+										title: 'folderName'
+									},
+									metadata : {
+										type : 'folder',
+										model : { id : 'folderId'}
+									},
+									state: "closed",
+									children : [{
+										data: {
+											attr: { id : 'mBeanId'},
+											title : 'MBeanName'											
+										},
+										metadata: {
+											type: "mBean",
+											model : { id : 'mBeanId'},
+											url: '/api/v1/jmxconnection/'+jmxConnection.id + '/mbean/mBeanId'
+										},
+										state: "closed",
+										children : [{
+											data: {
+												attr: {},
+												title: 'Attributes'
+											},
+											metadata: {
+												type: 'mBeanAttributeList',
+												model: {
+													connId: jmxConnection.id,
+													mBeanId: 'mBeanId',
+													_mBeanAttributeListModel : mBeanAttributeListModel
+												},
+												url: '/api/v1/jmxconnection/'+jmxConnection.id + '/mbean/mBeanId/attributes'
+											},
+											state: "closed",
+											children : [{
+												data: {
+													attr : {},
+													title : 'attributeName'
+												},
+												metadata: {
+													type: 'mBeanAttribute',
+													model : mBeanAttributeModel
+												}											
+											}]
+										},{
+											data: {
+												attr: {},
+												title: 'Operations'
+											},
+											metadata: {
+												url: '/api/v1/jmxconnection/'+jmxConnection.id + '/mbean/mBeanId/operations'
+											},
+											state: "closed",
+											children : [{
+												data: {
+													attr : {},
+													title : 'operationName'
+												},
+												metadata: {}											
+											}]
+										}]
+									}]
+								}]
+							}]
+						}], 
+
+						ajax : {
+							url : function(nodeArr){
+								return $(nodeArr[0]).data('url');
+							}
+						},
+						progressive_render : true
+
+					}
+				});
+			})
+		</script>
+	</body>
+</html>

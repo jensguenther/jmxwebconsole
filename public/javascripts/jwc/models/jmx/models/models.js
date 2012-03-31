@@ -1,0 +1,1 @@
+steal('./info_view_model.js')

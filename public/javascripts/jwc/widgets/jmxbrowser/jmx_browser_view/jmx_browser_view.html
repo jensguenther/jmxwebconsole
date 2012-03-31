@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Jwc.Widgets.Jmxbrowser.JmxBrowserView</title>
+	</head>
+	<body>
+	    <h1>Jwc.Widgets.Jmxbrowser.JmxBrowserView Demo</h1>
+		<div id='jmx_browser_view'></div>
+		<script type='text/javascript' 
+                src='../../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	'/public/stylesheets/base.css',
+					'/public/stylesheets/theme/jquery.ui.css',
+					'jwc/topic',
+					'jwc/models/api/v1/models/jmx_connection_model.js',
+					'jwc/widgets/jmxbrowser/jmx_browser_view',
+					function(){
+				$.jstree._themes = "/public/stylesheets/plugins/jstree/themes/";
+				
+				Topic.subscribe('loaded.jstree', function(event, data){
+					new jwc.models.api.v1.JMXConnectionModel({host: "10.232.31.198", port: "40020"})
+					.save(function(jmxConnection){ 
+						$('#jmx_browser_view').controller().addJMXConnection(jmxConnection);
+					});
+				});
+				
+				$('#jmx_browser_view').jwc_widgets_jmxbrowser_jmx_browser_view();
+			})
+		</script>
+	</body>
+</html>

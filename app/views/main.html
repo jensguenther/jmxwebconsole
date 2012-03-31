@@ -1,0 +1,25 @@
+#{set 'moreStyles'}
+	#{stylesheet 'base.css' /}
+	#{stylesheet 'theme/jquery.ui.css' /}
+#{/set}
+
+#{set 'moreScripts'}
+	#{script 'steal/steal.js' /}
+	#{script 'jwc/jwc.js' /}
+#{/set}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>#{get 'title' /}</title>
+        <meta charset="${_response_encoding}">
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+        #{get 'moreStyles' /}
+        
+        #{get 'moreScripts' /}
+    </head>
+    <body>
+        #{doLayout /}
+    </body>
+</html>

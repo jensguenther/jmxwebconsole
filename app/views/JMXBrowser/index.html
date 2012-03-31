@@ -1,0 +1,41 @@
+#{extends 'main.html' /}
+#{set title:'JMXBrowser' /}
+
+<button id="openJMXConnectionDialog">Open JMXConnectionDialog</button>
+<div id='dialog-OpenJMXConnection' title="Open JMX Connection" style="display: none;"></div>
+
+<div class="container">
+	<div class="row">
+		<div class="threecol wJMXTreeView"></div>
+		<div class="ninecol last wJMXInfoView"></div>
+	<div/>
+</div>
+
+
+<script type='text/javascript'>
+steal(	
+	'jwc/widgets/dialogs/open_jmx_connection_dialog',
+	'jwc/widgets/jmx/jmx_tree_view',
+	'jwc/widgets/jmx/jmx_info_view',
+	function(){
+		
+		$(".wJMXTreeView").jwc_widgets_jmx_jmx_tree_view();
+		$(".wJMXInfoView").jwc_widgets_jmx_jmx_info_view();
+		
+		// openJMXConnectionDialog --------------------------------------------------------------------------
+		
+		// creates the dialog
+		$( "#dialog-OpenJMXConnection" ).jwc_widgets_dialogs_open_jmx_connection_dialog();
+		// when a JMXConnectionModel was created we'll get notified over a topic
+		Topic.subscribe('opened.jmxconnection', function(jmxConnectionModel){
+			$(".wJMXTreeView").controller().addJMXConnection(jmxConnectionModel);
+		});
+		// init button handling
+		$( "#openJMXConnectionDialog" )
+		.button()
+		.click(function() {
+			$("#dialog-OpenJMXConnection").dialog( "open" );
+		});
+		
+	});
+</script>

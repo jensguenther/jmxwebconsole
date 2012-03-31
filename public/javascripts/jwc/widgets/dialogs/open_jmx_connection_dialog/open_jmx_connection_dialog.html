@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>jwc.widgets.dialogs.OpenJMXConnectionDialog</title>
+	</head>
+	<body>
+	    <h1>jwc.widgets.dialogs.OpenJMXConnectionDialog Demo</h1>
+
+		<button id="openJMXConnectionDialog">Open JMXConnectionDialog</button>
+	    
+		<div id='dialog-OpenJMXConnection' title="Open JMX Connection" style="display: none;"></div>
+		
+		<script type='text/javascript' 
+                src='../../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal(	'/public/stylesheets/base.css',
+					'/public/stylesheets/theme/jquery.ui.css',
+					'jquery/jquery.js')
+				.then(
+					'jquery.ui/jquery.ui.js',
+					'jwc/widgets/dialogs/open_jmx_connection_dialog',
+					'jwc/topic', function(){
+				
+				// creates the dialog
+				$( "#dialog-OpenJMXConnection" ).jwc_widgets_dialogs_open_jmx_connection_dialog();
+				// when a JMXConnectionModel was created we'll get notified over a topic
+				Topic.subscribe('opened.jmxconnection', function(jmxConnectionModel){
+					alert("Opened a JMXConnection to "+jmxConnectionModel.host +':'+jmxConnectionModel.port);
+					// lets remove the connection
+					jmxConnectionModel.destroy();
+				});
+				
+				$( "#openJMXConnectionDialog" )
+				.button()
+				.click(function() {
+					$("#dialog-OpenJMXConnection").dialog( "open" );
+				});
+			});
+		</script>
+	</body>
+</html>

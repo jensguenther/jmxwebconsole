@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Jwc.Widgets.Jmxbrowser.InfoView</title>
+        <style type='text/css'>
+            body {font-family: verdana}
+            .error {border: solid 1px red;}
+            .error_text { color: red; font-size: 10px;}
+            td {padding: 3px;}
+        </style>
+	</head>
+	<body>
+	    <h1>Jwc.Widgets.Jmxbrowser.InfoView Demo</h1>
+		<div id='info_view'></div>
+		<script type='text/javascript' 
+                src='../../../../steal/steal.js'>
+        </script>
+		<script type='text/javascript'>
+			steal('jwc/widgets/jmxbrowser/info_view',function(){
+				
+				$('#info_view').jwc_widgets_jmxbrowser_info_view({model: {key: 'testKey', value: 'testValue'}});
+			})
+		</script>
+	</body>
+</html>

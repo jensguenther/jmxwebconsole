@@ -1,0 +1,16 @@
+<table class="jqDataTable">
+	<thead>
+		<tr>
+			<th>Attribute</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+	<% for(var i = 0; i < data.attributes.length; i++) {%>
+		<tr>
+			<td><%= data.attributes[i].name %></td>
+			<td><%= data.attributes[i].value %></td>
+		</tr>
+	<% } %>
+	</tbody>
+</table>

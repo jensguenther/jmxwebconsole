@@ -1,0 +1,43 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Home page
+GET     /                                       Application.index
+
+# -----------------------------------------------------------------------
+# API Resources 
+# -----------------------------------------------------------------------
+
+# JMXConnection
+GET		/api/{apiVersion}/jmxconnection				api.{apiVersion}.jmxconnection.JMXConnectionResource.list
+POST	/api/{apiVersion}/jmxconnection				api.{apiVersion}.jmxconnection.JMXConnectionResource.post
+GET		/api/{apiVersion}/jmxconnection/{connId}	api.{apiVersion}.jmxconnection.JMXConnectionResource.get
+DELETE	/api/{apiVersion}/jmxconnection/{connId}	api.{apiVersion}.jmxconnection.JMXConnectionResource.delete
+
+# JMXConnection/Domain
+GET		/api/{apiVersion}/jmxconnection/{connId}/domain				api.{apiVersion}.jmxconnection.domain.DomainResource.list
+GET		/api/{apiVersion}/jmxconnection/{connId}/domain/{domain}	api.{apiVersion}.jmxconnection.domain.DomainResource.get
+
+# JMXConnection/MBean
+GET		/api/{apiVersion}/jmxconnection/{connId}/mbean/{mBeanId}					api.{apiVersion}.jmxconnection.mbean.MBeanResource.list
+GET		/api/{apiVersion}/jmxconnection/{connId}/mbean/{mBeanId}/attributes			api.{apiVersion}.jmxconnection.mbean.MBeanResource.attributes
+WS		/api/{apiVersion}/jmxconnection/{connId}/mbean/{mBeanId}/attributes			api.{apiVersion}.jmxconnection.mbean.MBeanWebSocket.attributes
+WS		/api/{apiVersion}/jmxconnection/{connId}/mbean/{mBeanId}/attributes/{name}	api.{apiVersion}.jmxconnection.mbean.MBeanWebSocket.attribute
+
+# -----------------------------------------------------------------------
+# Websockets 
+# -----------------------------------------------------------------------
+
+
+# A Websocket
+WS		/date									DateWebSocket.stream
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}
