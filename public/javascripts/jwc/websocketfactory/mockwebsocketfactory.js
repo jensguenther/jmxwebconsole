@@ -17,7 +17,13 @@ WebSocketFactory('MockWebSocketFactory',
 	/* prototype */
 	{	
 		createWebSocket : function(url){
-			return {};
+			return {
+				url : url,
+				onmessage : null,
+				fireMessage : function(message){
+					
+				}
+			};
 		}
 	}
 );
